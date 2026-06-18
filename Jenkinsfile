@@ -48,5 +48,22 @@ pipeline {
                 waitForQualityGate abortPipeline: true
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t 2810yash/shopping-cart:${BUILD_NUMBER} .'
+            }
+        }
+        
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push 2810yash/shopping-cart:${BUILD_NUMBER}
+                    '''
+                }
+            }
+        }
     }
 }
