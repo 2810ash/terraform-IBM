@@ -49,6 +49,12 @@ pipeline {
             }
         }
 
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests=true'
+            }
+        }
+        
         stage('Docker Build') {
             steps {
                 sh 'docker build -t 2810yash/shopping-cart:${BUILD_NUMBER} .'
